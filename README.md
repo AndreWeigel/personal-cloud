@@ -15,7 +15,8 @@ Nginx (reverse proxy + SSL)
    │                                  ├── Redis       (container)
    │                                  └── User files  ──▶  Hetzner Storage Box (sshfs)
    │
-   └── photos.andreweigel.me ──▶  [Immich — planned]
+   ├── photos.andreweigel.me ──▶  Immich       (localhost:2283)
+   └── status.andreweigel.me ──▶  Uptime Kuma  (localhost:3001)
 ```
 
 ---
@@ -26,9 +27,9 @@ Nginx (reverse proxy + SSL)
 |---|---|---|---|
 | Vaultwarden | vault.andreweigel.me | Live | Password manager (Bitwarden-compatible) |
 | Nextcloud | cloud.andreweigel.me | Live | File storage (Google Drive replacement) |
-| Immich | photos.andreweigel.me | Planned | Photo library (Google Photos replacement) |
+| Immich | photos.andreweigel.me | Live | Photo library (Google Photos replacement) |
+| Uptime Kuma | status.andreweigel.me | Live | Uptime monitoring |
 | Jellyfin | media.andreweigel.me | Planned | Media streaming |
-| Uptime Kuma | status.andreweigel.me | Planned | Uptime monitoring |
 | Personal site | andreweigel.me | Planned | Personal website |
 
 ---

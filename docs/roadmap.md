@@ -8,22 +8,8 @@ Planned services and improvements for the personal-cloud stack.
 
 - [x] **Vaultwarden** — password manager (Bitwarden-compatible)
 - [x] **Nextcloud** — file storage, calendar, contacts (Google Drive / Suite replacement)
-
----
-
-## Next Up
-
-### Immich — Google Photos Replacement
-- URL: `photos.andreweigel.me`
-- Docker Compose template: [../services/immich/docker-compose.yml](../services/immich/docker-compose.yml)
-- Nginx config: [../nginx/immich.conf](../nginx/immich.conf)
-- Photos stored on Hetzner Storage Box to keep VPS SSD free
-- Deploy with: `sudo ./scripts/deploy-service.sh immich`
-
-### Uptime Kuma — Status Monitoring
-- URL: `status.andreweigel.me`
-- Lightweight self-hosted uptime monitor with a public status page
-- Monitors all running services
+- [x] **Immich** — photo library (Google Photos replacement)
+- [x] **Uptime Kuma** — uptime monitoring with public status page
 
 ---
 
