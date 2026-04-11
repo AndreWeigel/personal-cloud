@@ -1,0 +1,7 @@
+# Production stack configuration — no secrets here, just non-sensitive settings.
+# Secrets (e.g. Hetzner API token) are stored encrypted via: pulumi config set --secret
+config:
+  personal-cloud:serverType: cx32        # 4 vCPU, 8 GB RAM
+  personal-cloud:serverLocation: nbg1    # Nuremberg, Germany
+  personal-cloud:serverImage: ubuntu-24.04
+  personal-cloud:sshKeyName: my-ssh-key  # Name of your SSH key in Hetzner Cloud console

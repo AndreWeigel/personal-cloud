@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  vaultwarden:
+    image: vaultwarden/server:latest
+    container_name: vaultwarden
+    restart: always
+    volumes:
+      # Persistent data (vault items, attachments, etc.)
+      - ./data:/data
+    environment:
+      # Enable WebSocket support for real-time sync
+      - WEBSOCKET_ENABLED=true
+      # Disable public signups — invite-only
+      - SIGNUPS_ALLOWED=false
+      # Admin panel token — set in .env (generate with: openssl rand -base64 48)
+      - ADMIN_TOKEN=${ADMIN_TOKEN}
+    ports:
+      # Only expose on localhost; Nginx handles external traffic
+      - "127.0.0.1:8080:80"
+      # WebSocket port for /notifications/hub
+      - "127.0.0.1:3012:3012"

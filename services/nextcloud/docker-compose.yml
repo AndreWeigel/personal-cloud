@@ -1,0 +1,48 @@
+version: '3'
+
+services:
+  # --- MariaDB database for Nextcloud ---
+  nextcloud-db:
+    image: mariadb:10.11
+    container_name: nextcloud-db
+    restart: always
+    command: --transaction-isolation=READ-COMMITTED --log-bin=binlog --binlog-format=ROW
+    volumes:
+      # Persistent database storage
+      - ./db:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+
+  # --- Redis cache for Nextcloud (improves performance significantly) ---
+  nextcloud-redis:
+    image: redis:alpine
+    container_name: nextcloud-redis
+    restart: always
+
+  # --- Nextcloud application ---
+  nextcloud:
+    image: nextcloud:latest
+    container_name: nextcloud
+    restart: always
+    depends_on:
+      - nextcloud-db
+      - nextcloud-redis
+    volumes:
+      # App config and internal data (not user files)
+      - ./data:/var/www/html
+    environment:
+      # Database connection
+      - MYSQL_HOST=nextcloud-db
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      # Redis connection
+      - REDIS_HOST=nextcloud-redis
+      # Trusted domain — must match your actual domain
+      - NEXTCLOUD_TRUSTED_DOMAINS=${NEXTCLOUD_TRUSTED_DOMAINS}
+    ports:
+      # Only expose on localhost; Nginx handles external traffic
+      - "127.0.0.1:8888:80"

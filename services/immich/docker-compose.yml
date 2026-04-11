@@ -1,0 +1,66 @@
+# =============================================================
+# Immich — Google Photos replacement
+# Status: PLANNED (not yet deployed)
+# Docs: https://immich.app/docs/install/docker-compose
+# =============================================================
+#
+# This is a template based on the official Immich Docker Compose.
+# Before deploying:
+#   1. Add IMMICH_* variables to your .env file
+#   2. Adjust upload volume path to point at your Storage Box mount
+#   3. Run: docker-compose up -d
+#
+# Target URL: photos.yourdomain.com
+
+version: "3.8"
+
+name: immich
+
+services:
+  immich-server:
+    container_name: immich_server
+    image: ghcr.io/immich-app/immich-server:release
+    restart: always
+    depends_on:
+      - immich-redis
+      - immich-database
+    volumes:
+      # User photos — point this at your Storage Box mount for large libraries
+      - ${UPLOAD_LOCATION:-./data/upload}:/usr/src/app/upload
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      - DB_HOSTNAME=immich-database
+      - DB_USERNAME=${DB_USERNAME:-immich}
+      - DB_PASSWORD=${DB_PASSWORD:-changeme}
+      - DB_DATABASE_NAME=${DB_DATABASE_NAME:-immich}
+      - REDIS_HOSTNAME=immich-redis
+    ports:
+      # Only expose on localhost; Nginx handles external traffic
+      - "127.0.0.1:2283:3001"
+
+  immich-machine-learning:
+    container_name: immich_machine_learning
+    image: ghcr.io/immich-app/immich-machine-learning:release
+    restart: always
+    volumes:
+      - model-cache:/cache
+
+  immich-redis:
+    container_name: immich_redis
+    image: redis:6.2-alpine
+    restart: always
+
+  immich-database:
+    container_name: immich_postgres
+    image: tensorchord/pgvecto-rs:pg14-v0.2.0
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-changeme}
+      - POSTGRES_USER=${DB_USERNAME:-immich}
+      - POSTGRES_DB=${DB_DATABASE_NAME:-immich}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  model-cache:
+  pgdata:
