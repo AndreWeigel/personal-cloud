@@ -10,6 +10,7 @@ Planned services and improvements for the personal-cloud stack.
 - [x] **Nextcloud** — file storage, calendar, contacts (Google Drive / Suite replacement)
 - [x] **Immich** — photo library (Google Photos replacement)
 - [x] **Uptime Kuma** — uptime monitoring with public status page
+- [x] **Splitpro** — self-hosted bill splitting
 
 ---
 

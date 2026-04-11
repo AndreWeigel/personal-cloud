@@ -45,4 +45,4 @@ services:
       - NEXTCLOUD_TRUSTED_DOMAINS=${NEXTCLOUD_TRUSTED_DOMAINS}
     ports:
       # Only expose on localhost; Nginx handles external traffic
-      - "127.0.0.1:8888:80"
+      - "127.0.0.1:8081:80"
