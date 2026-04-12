@@ -16,8 +16,7 @@ Nginx (reverse proxy + SSL)
    │                                  └── User files  ──▶  Hetzner Storage Box (sshfs)
    │
    ├── photos.andreweigel.me ──▶  Immich       (localhost:2283)
-   ├── status.andreweigel.me ──▶  Uptime Kuma  (localhost:3001)
-   └── split.andreweigel.me  ──▶  Splitpro     (localhost:3000)
+   └── status.andreweigel.me ──▶  Uptime Kuma  (localhost:3001)
 ```
 
 ---
@@ -30,7 +29,7 @@ Nginx (reverse proxy + SSL)
 | Nextcloud | cloud.andreweigel.me | Live | File storage (Google Drive replacement) |
 | Immich | photos.andreweigel.me | Live | Photo library (Google Photos replacement) |
 | Uptime Kuma | status.andreweigel.me | Live | Uptime monitoring |
-| Splitpro | split.andreweigel.me | Live | Bill splitting |
+
 | Jellyfin | media.andreweigel.me | Planned | Media streaming |
 | Personal site | andreweigel.me | Planned | Personal website |
 
