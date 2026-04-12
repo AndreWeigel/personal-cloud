@@ -22,9 +22,9 @@ Additionally, Hetzner's Cloud Firewall (managed via Pulumi in [../infra/index.ts
 
 ## SSH Hardening
 
-- **Password authentication disabled** — SSH key only
+- **Password authentication disabled** — SSH key only (`PasswordAuthentication no`)
 - **Root login restricted** to key-only (`PermitRootLogin prohibit-password`)
-- Applied in `/etc/ssh/sshd_config` by `bootstrap.sh`
+- Applied via `/etc/ssh/sshd_config.d/hardening.conf` (drop-in, survives package updates)
 
 ---
 
