@@ -1,0 +1,26 @@
+services:
+  navidrome:
+    image: deluan/navidrome:latest
+    container_name: navidrome
+    restart: always
+    user: root
+    volumes:
+      # App data (database, playlists, scrobble cache)
+      - ./data:/data
+      # Music library on Storage Box — read-only for security
+      - /mnt/storagebox/navidrome:/music:ro
+    environment:
+      # Scan for new music every hour
+      ND_SCANSCHEDULE: 1h
+      ND_LOGLEVEL: info
+      ND_SESSIONTIMEOUT: 24h
+      # Required when behind a reverse proxy
+      ND_BASEURL: ""
+      # Reject connections not coming through Nginx
+      ND_ADDRESS: "0.0.0.0"
+      ND_PORT: "4533"
+    ports:
+      # Localhost only — Nginx handles external traffic
+      - "127.0.0.1:4533:4533"
+    security_opt:
+      - no-new-privileges:true

@@ -10,14 +10,11 @@ Planned services and improvements for the personal-cloud stack.
 - [x] **Nextcloud** — file storage, calendar, contacts (Google Drive / Suite replacement)
 - [x] **Immich** — photo library (Google Photos replacement)
 - [x] **Uptime Kuma** — uptime monitoring with public status page
+- [x] **Jellyfin** — video streaming (movies & TV)
+- [x] **Navidrome** — music streaming (Subsonic API compatible)
 ---
 
 ## Planned
-
-### Jellyfin — Media Streaming
-- URL: `media.andreweigel.me`
-- Self-hosted Netflix / Plex alternative
-- Media library stored on Storage Box
 
 ### Personal Website
 - URL: `andreweigel.me`

@@ -68,6 +68,10 @@ sudo fail2ban-client status sshd
 - Database credentials are environment variables, not hardcoded
 - MariaDB container does not expose any ports externally
 
+**Jellyfin & Navidrome:**
+- Media Storage Box mounts are mounted **read-only** (`:ro`) inside both containers — a compromised container cannot modify or delete media files
+- `no-new-privileges:true` security option set on both
+
 **All services:**
 - Docker containers bind only to `127.0.0.1` — Nginx is the single external entry point
 - Credentials are stored in `.env` files, which are excluded from git via `.gitignore`
@@ -91,4 +95,4 @@ The `.gitignore` enforces this — see [../.gitignore](../.gitignore).
 - [ ] Enable two-factor authentication on the Hetzner Cloud account
 - [ ] Set up automatic security updates (`unattended-upgrades`)
 - [ ] Consider Crowdsec as a more modern alternative to Fail2Ban
-- [ ] Add monitoring / alerting (Uptime Kuma planned)
+

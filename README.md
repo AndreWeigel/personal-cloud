@@ -16,7 +16,9 @@ Nginx (reverse proxy + SSL)
    │                                  └── User files  ──▶  Hetzner Storage Box (sshfs)
    │
    ├── photos.andreweigel.me ──▶  Immich       (localhost:2283)
-   └── status.andreweigel.me ──▶  Uptime Kuma  (localhost:3001)
+   ├── status.andreweigel.me ──▶  Uptime Kuma  (localhost:3001)
+   ├── media.andreweigel.me  ──▶  Jellyfin     (localhost:8096)
+   └── music.andreweigel.me  ──▶  Navidrome    (localhost:4533)
 ```
 
 ---
@@ -30,7 +32,8 @@ Nginx (reverse proxy + SSL)
 | Immich | photos.andreweigel.me | Live | Photo library (Google Photos replacement) |
 | Uptime Kuma | status.andreweigel.me | Live | Uptime monitoring |
 
-| Jellyfin | media.andreweigel.me | Planned | Media streaming |
+| Jellyfin | media.andreweigel.me | Live | Video streaming (movies & TV) |
+| Navidrome | music.andreweigel.me | Live | Music streaming (Subsonic API) |
 | Personal site | andreweigel.me | Planned | Personal website |
 
 ---
@@ -43,6 +46,18 @@ Nginx (reverse proxy + SSL)
 | Storage | Hetzner Storage Box BX11 — 1 TB, Falkenstein | ~€4/mo |
 | Domain | andreweigel.me at Gandi.net | ~€15/yr |
 | **Total** | | **~€19/mo** |
+
+### Storage layout (Hetzner Storage Box)
+
+```
+Storage Box (1TB)
+├── nextcloud/    User files (Nextcloud external storage)
+├── immich/       Photo library
+├── jellyfin/
+│   ├── movies/
+│   └── tvshows/
+└── navidrome/    Music library
+```
 
 ---
 

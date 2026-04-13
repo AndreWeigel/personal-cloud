@@ -13,9 +13,16 @@ VPS (CX32 — 80 GB SSD, Nuremberg)
 ├── ~/nextcloud/data/         Nextcloud app data (not user files)
 ├── ~/nextcloud/db/           MariaDB database files
 ├── ~/vaultwarden/data/       Encrypted vault items
+├── ~/jellyfin/config/        Jellyfin metadata, config, and DB
+├── ~/jellyfin/cache/         Jellyfin transcoding cache
+├── ~/navidrome/data/         Navidrome database and playlists
 │
 └── /mnt/storagebox/          ─── sshfs mount ───▶  Hetzner Storage Box (1 TB, Falkenstein)
-    └── nextcloud/                                    Nextcloud user files (photos, docs, etc.)
+    ├── nextcloud/                                    Nextcloud user files
+    ├── immich/                                       Photo library
+    ├── jellyfin/movies/                              Movies (read-only in container)
+    ├── jellyfin/tvshows/                             TV shows (read-only in container)
+    └── navidrome/                                    Music library (read-only in container)
 ```
 
 ---
@@ -73,6 +80,18 @@ The `backup.sh` script (see [../scripts/backup.sh](../scripts/backup.sh)) handle
 
 ---
 
-## Future: Immich (Photo Storage)
+## Media storage (Jellyfin & Navidrome)
 
-When Immich is deployed, its upload directory will be pointed at `/mnt/storagebox/immich` — keeping large photo libraries off the VPS SSD entirely.
+All media is stored on the Storage Box and mounted **read-only** inside the containers. This means:
+- A compromised container cannot modify or delete your media files
+- The VPS SSD isn't consumed by large video/music libraries
+- Jellyfin config and cache (thumbnails, metadata) stay on the fast VPS SSD for performance
+
+To add media, upload files directly to the Storage Box:
+```bash
+# Via SFTP (port 23)
+sftp -P 23 uXXXXXX@uXXXXXX.your-storagebox.de
+# Then navigate to /home/jellyfin/movies or /home/navidrome
+```
+
+After adding music, trigger a Navidrome scan from its web UI (**Settings → Scan Library**), or wait for the hourly auto-scan. Jellyfin scans automatically when you add a new library item, or you can trigger it manually from the dashboard.
