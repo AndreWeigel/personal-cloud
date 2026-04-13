@@ -52,7 +52,18 @@ sudo fail2ban-client status sshd
 - All services use **Let's Encrypt certificates** (free, auto-renewing)
 - Certbot runs in Nginx mode — it handles certificate issuance and Nginx config updates
 - HTTP is automatically redirected to HTTPS by Nginx after Certbot runs
-- **HSTS** is set on Nextcloud: `Strict-Transport-Security: max-age=31536000; includeSubDomains; preload`
+- **HSTS** (`Strict-Transport-Security: max-age=31536000; includeSubDomains; preload`) is set on all domains
+
+---
+
+## Nginx Hardening
+
+- **`server_tokens off`** — Nginx does not reveal its version in response headers
+- All domains return the following security headers:
+  - `Strict-Transport-Security` — forces HTTPS for 1 year
+  - `X-Frame-Options: SAMEORIGIN` — prevents clickjacking
+  - `X-Content-Type-Options: nosniff` — prevents MIME sniffing
+  - `Referrer-Policy: strict-origin-when-cross-origin`
 
 ---
 
@@ -64,17 +75,31 @@ sudo fail2ban-client status sshd
 - Container only binds to localhost (`127.0.0.1:8080`) — not accessible directly from outside
 
 **Nextcloud:**
-- Runs behind Nginx with `X-Frame-Options`, `X-Content-Type-Options` headers
-- Database credentials are environment variables, not hardcoded
-- MariaDB container does not expose any ports externally
+- Runs behind Nginx with full security headers
+- Database credentials are environment variables, never hardcoded
+- MariaDB and Redis containers do not expose any ports externally
 
-**Jellyfin & Navidrome:**
-- Media Storage Box mounts are mounted **read-only** (`:ro`) inside both containers — a compromised container cannot modify or delete media files
-- `no-new-privileges:true` security option set on both
+**Immich:**
+- No public registration in v2.x — users can only be created by admin
+- Container binds to localhost only (`127.0.0.1:2283`)
+
+**Jellyfin:**
+- Setup wizard completed — public account creation not possible
+- Container binds to localhost only (`127.0.0.1:8096`)
+- Media library mounted read-only (`:ro`) — a compromised container cannot modify media files
+
+**Navidrome:**
+- Public registration disabled (`ND_ENABLEUSERCREATION=false`)
+- Container binds to localhost only (`127.0.0.1:4533`)
+- Music library mounted read-only (`:ro`)
+
+**Uptime Kuma:**
+- Single admin account, no public registration
 
 **All services:**
 - Docker containers bind only to `127.0.0.1` — Nginx is the single external entry point
-- Credentials are stored in `.env` files, which are excluded from git via `.gitignore`
+- Credentials are stored in `.env` files, excluded from git via `.gitignore`
+- `no-new-privileges:true` set on Jellyfin and Navidrome containers
 
 ---
 
@@ -84,6 +109,7 @@ sudo fail2ban-client status sshd
 - No SSH private keys
 - No SSL certificates or private keys
 - No `.env` files (only `.env.example` with placeholder values)
+- No server IP address
 
 The `.gitignore` enforces this — see [../.gitignore](../.gitignore).
 
@@ -91,8 +117,6 @@ The `.gitignore` enforces this — see [../.gitignore](../.gitignore).
 
 ## Recommended Improvements
 
-- [ ] Restrict SSH port 22 in UFW to your home IP (`ufw allow from <your-ip> to any port 22`)
-- [ ] Enable two-factor authentication on the Hetzner Cloud account
-- [ ] Set up automatic security updates (`unattended-upgrades`)
+- [ ] **WireGuard VPN** — expose SSH only through the VPN tunnel, removing port 22 from the public internet entirely. Better than IP-restricting UFW since it works from any network.
+- [ ] **2FA on Hetzner Cloud account** — console access bypasses all server-level security; protecting the Hetzner account is important.
 - [ ] Consider Crowdsec as a more modern alternative to Fail2Ban
-
