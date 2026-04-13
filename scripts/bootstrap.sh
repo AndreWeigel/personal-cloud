@@ -67,6 +67,12 @@ else
     info "Nginx installed."
 fi
 
+# Hide Nginx version in response headers
+if grep -q '# server_tokens off' /etc/nginx/nginx.conf; then
+    sed -i 's/# server_tokens off;/server_tokens off;/' /etc/nginx/nginx.conf
+    info "Nginx server_tokens disabled."
+fi
+
 # ---------------------------------------------------------------------------
 # 4. Install Certbot (Let's Encrypt)
 # ---------------------------------------------------------------------------

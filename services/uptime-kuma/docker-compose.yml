@@ -1,5 +1,5 @@
 # Uptime Kuma — self-hosted uptime monitoring
-# URL: status.andreweigel.me
+# URL: status.yourdomain.com
 
 services:
   uptime-kuma:
