@@ -18,7 +18,8 @@ Nginx (reverse proxy + SSL)
    ├── photos.andreweigel.me ──▶  Immich       (localhost:2283)
    ├── status.andreweigel.me ──▶  Uptime Kuma  (localhost:3001)
    ├── media.andreweigel.me  ──▶  Jellyfin     (localhost:8096)
-   └── music.andreweigel.me  ──▶  Navidrome    (localhost:4533)
+   ├── music.andreweigel.me  ──▶  Navidrome    (localhost:4533)
+   └── scattered.andreweigel.me ──▶  Scattered  (web: 3002, api: 8001)
 ```
 
 ---
@@ -34,6 +35,7 @@ Nginx (reverse proxy + SSL)
 
 | Jellyfin | media.andreweigel.me | Live | Video streaming (movies & TV) |
 | Navidrome | music.andreweigel.me | Live | Music streaming (Subsonic API) |
+| Scattered | scattered.andreweigel.me | Live | Personal task manager with LLM + MCP server |
 | Personal site | andreweigel.me | Planned | Personal website |
 
 ---
