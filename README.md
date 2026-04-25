@@ -8,39 +8,37 @@ Browser
    ▼
 Nginx (reverse proxy + SSL)
    │
-   ├── vault.andreweigel.me  ──▶  Vaultwarden  (localhost:8080)
-   ├── cloud.andreweigel.me  ──▶  Nextcloud    (localhost:8888)
-   │                                  │
-   │                                  ├── MariaDB     (container)
-   │                                  ├── Redis       (container)
-   │                                  └── User files  ──▶  Hetzner Storage Box (sshfs)
+   ├── vault.andreweigel.me     ──▶  Vaultwarden  (localhost:8080)
+   ├── cloud.andreweigel.me     ──▶  Nextcloud    (localhost:8081)
+   │                                     │
+   │                                     ├── MariaDB     (container)
+   │                                     ├── Redis       (container)
+   │                                     └── User files  ──▶  Hetzner Storage Box (sshfs)
    │
-   ├── photos.andreweigel.me ──▶  Immich       (localhost:2283)
-   ├── status.andreweigel.me ──▶  Uptime Kuma  (localhost:3001)
-   ├── media.andreweigel.me  ──▶  Jellyfin     (localhost:8096)
-   ├── music.andreweigel.me  ──▶  Navidrome    (localhost:4533)
-   ├── books.andreweigel.me  ──▶  Calibre-Web  (localhost:8083)
-   ├── do.andreweigel.me     ──▶  Vikunja      (localhost:3456)
-   └── scattered.andreweigel.me ──▶  Scattered  (web: 3002, api: 8001)
+   ├── photos.andreweigel.me    ──▶  Immich       (localhost:2283)
+   ├── media.andreweigel.me     ──▶  Jellyfin     (localhost:8096)
+   ├── music.andreweigel.me     ──▶  Navidrome    (localhost:4533)
+   ├── books.andreweigel.me     ──▶  Calibre-Web  (localhost:8083)
+   ├── do.andreweigel.me        ──▶  Vikunja      (localhost:3456)
+   ├── status.andreweigel.me    ──▶  Uptime Kuma  (localhost:3001)
+   └── scattered.andreweigel.me ──▶  Scattered    (localhost:3002 / 8001)
 ```
 
 ---
 
 ## Services
 
-| Service | URL | Status | Description |
-|---|---|---|---|
-| Vaultwarden | vault.andreweigel.me | Live | Password manager (Bitwarden-compatible) |
-| Nextcloud | cloud.andreweigel.me | Live | File storage (Google Drive replacement) |
-| Immich | photos.andreweigel.me | Live | Photo library (Google Photos replacement) |
-| Uptime Kuma | status.andreweigel.me | Live | Uptime monitoring |
-
-| Jellyfin | media.andreweigel.me | Live | Video streaming (movies & TV) |
-| Navidrome | music.andreweigel.me | Live | Music streaming (Subsonic API) |
-| Calibre-Web | books.andreweigel.me | Live | Ebook library (OPDS for Kobo) |
-| Vikunja | do.andreweigel.me | Live | To-do & project management |
-| Scattered | scattered.andreweigel.me | Live | Personal task manager with LLM + MCP server |
-| Personal site | andreweigel.me | Planned | Personal website |
+| Service | URL | Description |
+|---|---|---|
+| Vaultwarden | vault.andreweigel.me | Password manager (Bitwarden-compatible) |
+| Nextcloud | cloud.andreweigel.me | File storage (Google Drive replacement) |
+| Immich | photos.andreweigel.me | Photo library (Google Photos replacement) |
+| Jellyfin | media.andreweigel.me | Video streaming (movies & TV) |
+| Navidrome | music.andreweigel.me | Music streaming (Subsonic API) |
+| Calibre-Web | books.andreweigel.me | Ebook library with OPDS (Kobo-compatible) |
+| Vikunja | do.andreweigel.me | To-do & project management |
+| Uptime Kuma | status.andreweigel.me | Uptime monitoring |
+| Scattered | scattered.andreweigel.me | Personal task manager with LLM + MCP server |
 
 ---
 
@@ -96,14 +94,9 @@ pulumi up
 ### 2. Bootstrap the server
 
 ```bash
-# SSH into the new server
 ssh root@<server-ip>
-
-# Clone this repo on the server
 git clone https://github.com/AndreWeigel/personal-cloud.git
 cd personal-cloud
-
-# Run the setup script
 sudo ./scripts/bootstrap.sh
 ```
 
@@ -117,11 +110,8 @@ nano .env   # fill in your real values
 ### 4. Deploy a service
 
 ```bash
-sudo ./scripts/deploy-service.sh vaultwarden
-sudo ./scripts/ssl-setup.sh vault.andreweigel.me
-
-sudo ./scripts/deploy-service.sh nextcloud
-sudo ./scripts/ssl-setup.sh cloud.andreweigel.me
+sudo ./scripts/deploy-service.sh <service-name>
+sudo ./scripts/ssl-setup.sh <subdomain.yourdomain.com>
 ```
 
 ---
@@ -141,15 +131,21 @@ personal-cloud/
 ├── services/               # Docker Compose per service
 │   ├── vaultwarden/
 │   ├── nextcloud/
-│   └── immich/
+│   ├── immich/
+│   ├── jellyfin/
+│   ├── navidrome/
+│   ├── calibre-web/
+│   ├── vikunja/
+│   ├── uptime-kuma/
+│   └── scattered/
 │
-├── nginx/                  # Nginx reverse proxy configs
+├── nginx/                  # Nginx reverse proxy configs (one file per service)
 │
 ├── scripts/                # Setup and maintenance scripts
 │   ├── bootstrap.sh        # Initial server setup
 │   ├── deploy-service.sh   # Deploy or update a service
 │   ├── ssl-setup.sh        # Obtain Let's Encrypt certificate
-│   └── backup.sh           # Local backup routine
+│   └── backup.sh           # Backup routine
 │
 └── docs/                   # Detailed documentation
     ├── setup-guide.md
