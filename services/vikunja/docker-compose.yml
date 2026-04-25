@@ -1,0 +1,17 @@
+services:
+  vikunja:
+    image: vikunja/vikunja:latest
+    container_name: vikunja
+    restart: always
+    volumes:
+      - ./data:/app/vikunja/files
+      - ./db:/db
+    environment:
+      VIKUNJA_SERVICE_PUBLICURL: https://do.andreweigel.me
+      VIKUNJA_DATABASE_TYPE: sqlite
+      VIKUNJA_LOG_LEVEL: info
+      VIKUNJA_SERVICE_ENABLEREGISTRATION: "false"
+    ports:
+      - "127.0.0.1:3456:3456"
+    security_opt:
+      - no-new-privileges:true

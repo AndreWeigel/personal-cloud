@@ -19,6 +19,8 @@ Nginx (reverse proxy + SSL)
    ├── status.andreweigel.me ──▶  Uptime Kuma  (localhost:3001)
    ├── media.andreweigel.me  ──▶  Jellyfin     (localhost:8096)
    ├── music.andreweigel.me  ──▶  Navidrome    (localhost:4533)
+   ├── books.andreweigel.me  ──▶  Calibre-Web  (localhost:8083)
+   ├── do.andreweigel.me     ──▶  Vikunja      (localhost:3456)
    └── scattered.andreweigel.me ──▶  Scattered  (web: 3002, api: 8001)
 ```
 
@@ -35,6 +37,8 @@ Nginx (reverse proxy + SSL)
 
 | Jellyfin | media.andreweigel.me | Live | Video streaming (movies & TV) |
 | Navidrome | music.andreweigel.me | Live | Music streaming (Subsonic API) |
+| Calibre-Web | books.andreweigel.me | Live | Ebook library (OPDS for Kobo) |
+| Vikunja | do.andreweigel.me | Live | To-do & project management |
 | Scattered | scattered.andreweigel.me | Live | Personal task manager with LLM + MCP server |
 | Personal site | andreweigel.me | Planned | Personal website |
 
@@ -58,7 +62,8 @@ Storage Box (1TB)
 ├── jellyfin/
 │   ├── movies/
 │   └── tvshows/
-└── navidrome/    Music library
+├── navidrome/    Music library
+└── calibre/      Ebook library (Calibre database)
 ```
 
 ---

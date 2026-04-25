@@ -1,0 +1,21 @@
+services:
+  calibre-web:
+    image: lscr.io/linuxserver/calibre-web:latest
+    container_name: calibre-web
+    restart: always
+    user: root
+    volumes:
+      # App config and database
+      - ./config:/config
+      # Calibre library on Storage Box
+      - /mnt/storagebox/calibre:/books
+    environment:
+      - PUID=1000
+      - PGID=1000
+      # Enable the built-in OPDS catalog for Kobo WiFi access
+      - DOCKER_MODS=linuxserver/mods:universal-calibre
+    ports:
+      # Localhost only — Nginx handles external traffic
+      - "127.0.0.1:8083:8083"
+    security_opt:
+      - no-new-privileges:true
