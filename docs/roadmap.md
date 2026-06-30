@@ -12,6 +12,7 @@ Planned services and improvements for the personal-cloud stack.
 - [x] **Uptime Kuma** — uptime monitoring with public status page
 - [x] **Jellyfin** — video streaming (movies & TV)
 - [x] **Navidrome** — music streaming (Subsonic API compatible)
+- [x] **Audiobookshelf** — audiobook & podcast server (chapters, resume, mobile apps; library shared with Nextcloud)
 ---
 
 ## Planned

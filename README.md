@@ -17,7 +17,8 @@ Nginx (reverse proxy + SSL)
    │
    ├── photos.andreweigel.me    ──▶  Immich       (localhost:2283)
    ├── media.andreweigel.me     ──▶  Jellyfin     (localhost:8096)
-   ├── music.andreweigel.me     ──▶  Navidrome    (localhost:4533)
+   ├── music.andreweigel.me     ──▶  Navidrome      (localhost:4533)
+   ├── audiobooks.andreweigel.me──▶  Audiobookshelf (localhost:13378)
    ├── books.andreweigel.me     ──▶  Calibre-Web  (localhost:8083)
    ├── do.andreweigel.me        ──▶  Vikunja      (localhost:3456)
    ├── status.andreweigel.me    ──▶  Uptime Kuma  (localhost:3001)
@@ -35,6 +36,7 @@ Nginx (reverse proxy + SSL)
 | Immich | photos.andreweigel.me | Photo library (Google Photos replacement) |
 | Jellyfin | media.andreweigel.me | Video streaming (movies & TV) |
 | Navidrome | music.andreweigel.me | Music streaming (Subsonic API) |
+| Audiobookshelf | audiobooks.andreweigel.me | Audiobook & podcast server (chapters, resume, mobile apps) |
 | Calibre-Web | books.andreweigel.me | Ebook library with OPDS (Kobo-compatible) |
 | Vikunja | do.andreweigel.me | To-do & project management |
 | Uptime Kuma | status.andreweigel.me | Uptime monitoring |
@@ -60,8 +62,9 @@ Storage Box (1TB)
 ├── jellyfin/
 │   ├── movies/
 │   └── tvshows/
-├── navidrome/    Music library
-└── calibre/      Ebook library (Calibre database)
+├── navidrome/      Music library
+├── audiobookshelf/ Audiobook library (also exposed in Nextcloud via SFTP)
+└── calibre/        Ebook library (Calibre database)
 ```
 
 ---
@@ -134,6 +137,7 @@ personal-cloud/
 │   ├── immich/
 │   ├── jellyfin/
 │   ├── navidrome/
+│   ├── audiobookshelf/
 │   ├── calibre-web/
 │   ├── vikunja/
 │   ├── uptime-kuma/

@@ -16,13 +16,16 @@ VPS (CX32 — 80 GB SSD, Nuremberg)
 ├── ~/jellyfin/config/        Jellyfin metadata, config, and DB
 ├── ~/jellyfin/cache/         Jellyfin transcoding cache
 ├── ~/navidrome/data/         Navidrome database and playlists
+├── ~/audiobookshelf/config/  Audiobookshelf settings, users, sessions
+├── ~/audiobookshelf/metadata/ Audiobookshelf covers, caches, backups
 │
 └── /mnt/storagebox/          ─── sshfs mount ───▶  Hetzner Storage Box (1 TB, Falkenstein)
     ├── nextcloud/                                    Nextcloud user files
     ├── immich/                                       Photo library
     ├── jellyfin/movies/                              Movies (read-only in container)
     ├── jellyfin/tvshows/                             TV shows (read-only in container)
-    └── navidrome/                                    Music library (read-only in container)
+    ├── navidrome/                                    Music library (read-only in container)
+    └── audiobookshelf/                               Audiobook library (shared with Nextcloud)
 ```
 
 ---
@@ -95,3 +98,34 @@ sftp -P 23 uXXXXXX@uXXXXXX.your-storagebox.de
 ```
 
 After adding music, trigger a Navidrome scan from its web UI (**Settings → Scan Library**), or wait for the hourly auto-scan. Jellyfin scans automatically when you add a new library item, or you can trigger it manually from the dashboard.
+
+---
+
+## Audiobooks (Audiobookshelf + Nextcloud bridge)
+
+Audiobookshelf stores its library at `/mnt/storagebox/audiobookshelf` (Storage Box
+folder `/home/audiobookshelf`), mounted into the container at `/audiobooks`. Its
+config and generated metadata stay on the VPS SSD (`~/audiobookshelf/config` and
+`~/audiobookshelf/metadata`).
+
+The same Storage Box folder is exposed inside Nextcloud as a second SFTP External
+Storage mount (mount point **Audiobooks**, rooted at `/home/audiobookshelf`), a
+sibling of the existing `/Storage Box` mount that points at `/home/nextcloud`.
+Because both reference the same directory, a book dropped into the Nextcloud
+**Audiobooks** folder (e.g. via the desktop sync client) appears in Audiobookshelf,
+and vice versa:
+
+```
+Nextcloud "Audiobooks"  ──SFTP──┐
+                                ├──▶  Storage Box /home/audiobookshelf
+Audiobookshelf /audiobooks ─sshfs┘            (same directory)
+```
+
+Server-side encryption is disabled, so files written through Nextcloud land as
+plaintext and remain directly readable by Audiobookshelf. After uploading, trigger
+a scan from the ABS web UI — network mounts don't reliably auto-detect new files.
+
+Recommended layout for clean metadata matching:
+```
+audiobookshelf/<Author>/<Title>/<audio files (.m4b, .mp3, …)>
+```

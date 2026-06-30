@@ -1,0 +1,38 @@
+services:
+  audiobookshelf:
+    image: ghcr.io/advplyr/audiobookshelf:latest
+    container_name: audiobookshelf
+    restart: always
+    volumes:
+      # App config (server settings, users, sessions)
+      - ./config:/config
+      # Generated metadata (covers, cached transcodes, backups)
+      - ./metadata:/metadata
+      # Audiobook library on Storage Box.
+      # Kept read-write so books can also be uploaded via the ABS web UI;
+      # the primary upload path is the Nextcloud "Audiobooks" folder, which
+      # writes to the same Storage Box directory over SFTP (see below).
+      - /mnt/storagebox/audiobookshelf:/audiobooks
+    environment:
+      - TZ=Europe/Berlin
+    ports:
+      # Localhost only — Nginx handles external traffic
+      - "127.0.0.1:13378:80"
+    security_opt:
+      - no-new-privileges:true
+
+# ---------------------------------------------------------------------------
+# Nextcloud bridge
+# ---------------------------------------------------------------------------
+# The Storage Box folder /home/audiobookshelf is also mounted into Nextcloud
+# as an SFTP External Storage ("Audiobooks", mount id 2), so books dropped
+# into the Nextcloud "Audiobooks" folder land in the same place Audiobookshelf
+# reads from. After uploading, trigger a scan in the ABS web UI (network
+# mounts don't reliably auto-detect new files).
+#
+#   docker exec -u www-data nextcloud php occ files_external:create \
+#     "/Audiobooks" sftp password::password \
+#     --config host=<uXXXXXX>.your-storagebox.de \
+#     --config root=/home/audiobookshelf \
+#     --config port=23 --config user=<uXXXXXX> --config password=<password>
+# ---------------------------------------------------------------------------
