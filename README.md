@@ -21,9 +21,7 @@ Nginx (reverse proxy + SSL)
    ├── music.andreweigel.me     ──▶  Navidrome      (localhost:4533)
    ├── audiobooks.andreweigel.me──▶  Audiobookshelf (localhost:13378)
    ├── books.andreweigel.me     ──▶  Calibre-Web  (localhost:8083)
-   ├── do.andreweigel.me        ──▶  Vikunja      (localhost:3456)
-   ├── status.andreweigel.me    ──▶  Uptime Kuma  (localhost:3001)
-   └── scattered.andreweigel.me ──▶  Scattered    (localhost:3002 / 8001)
+   └── status.andreweigel.me    ──▶  Uptime Kuma  (localhost:3001)
 ```
 
 ---
@@ -39,9 +37,7 @@ Nginx (reverse proxy + SSL)
 | Navidrome | music.andreweigel.me | Music streaming (Subsonic API) |
 | Audiobookshelf | audiobooks.andreweigel.me | Audiobook & podcast server (chapters, resume, mobile apps) |
 | Calibre-Web | books.andreweigel.me | Ebook library with OPDS (Kobo-compatible) |
-| Vikunja | do.andreweigel.me | To-do & project management |
 | Uptime Kuma | status.andreweigel.me | Uptime monitoring |
-| Scattered | scattered.andreweigel.me | Personal task manager with LLM + MCP server |
 
 ---
 
@@ -140,9 +136,7 @@ personal-cloud/
 │   ├── navidrome/
 │   ├── audiobookshelf/
 │   ├── calibre-web/
-│   ├── vikunja/
-│   ├── uptime-kuma/
-│   └── scattered/
+│   └── uptime-kuma/
 │
 ├── nginx/                  # Nginx reverse proxy configs (one file per service)
 │
