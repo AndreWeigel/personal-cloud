@@ -1,0 +1,52 @@
+# Firefly III AI auto-categorization add-on (OPTIONAL)
+# Ollama (local LLM) + Node-RED (webhook glue). No public endpoint — both bind
+# to localhost only and talk to Firefly over the shared `finance-net` network.
+#
+# Flow:  Firefly webhook (transaction created/updated)
+#          → Node-RED (http://firefly-node-red:1880)
+#          → Ollama   (http://firefly-ollama:11434/v1/chat/completions)
+#          → writes category/budget + `ai-assisted` tag back to the Firefly API
+#
+# ⚠️  RESOURCE NOTE: this VPS has 8 GB RAM already shared with Nextcloud, Immich
+#     (incl. ML), Jellyfin and two databases. Run a SMALL model only
+#     (llama3.2:3b or phi3:mini) and watch memory. If it's too tight, point
+#     Node-RED at an Ollama running on your Mac instead and drop the ollama
+#     service here.
+#
+# Prerequisites (run once):
+#   docker network create finance-net      # shared with services/firefly
+# This add-on has no Nginx config on purpose; start it manually rather than via
+# deploy-service.sh, and reach the Node-RED editor over an SSH tunnel:
+#   ssh -L 1880:localhost:1880 root@<server-ip>   then open http://localhost:1880
+
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: firefly-ollama
+    restart: always
+    volumes:
+      # Downloaded models persist here
+      - ./data/ollama:/root/.ollama
+    ports:
+      # Localhost only — never expose an unauthenticated LLM to the internet
+      - "127.0.0.1:11434:11434"
+    networks:
+      - finance-net
+
+  node-red:
+    image: nodered/node-red:latest
+    container_name: firefly-node-red
+    restart: always
+    depends_on:
+      - ollama
+    volumes:
+      - ./data/node-red:/data
+    ports:
+      # Localhost only — reach the editor via SSH tunnel (see header)
+      - "127.0.0.1:1880:1880"
+    networks:
+      - finance-net
+
+networks:
+  finance-net:
+    external: true

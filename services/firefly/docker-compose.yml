@@ -1,0 +1,115 @@
+# Firefly III — personal finance / cash-flow analysis (finance.andreweigel.me)
+# Docs: https://docs.firefly-iii.org/how-to/firefly-iii/installation/docker/
+#
+# Four containers:
+#   firefly           → the app (bound to localhost:8082, fronted by Nginx)
+#   firefly-db        → MariaDB, private to this stack
+#   firefly-cron      → hourly sidecar that triggers Firefly's recurring jobs
+#   firefly-importer  → Data Importer for N26 via GoCardless (import.andreweigel.me)
+#
+# The shared `finance-net` network lets the optional AI add-on (services/firefly-ai)
+# reach the Firefly API and receive webhooks. Create it once before deploying:
+#   docker network create finance-net
+
+services:
+  # --- Firefly III application ---
+  firefly:
+    image: fireflyiii/core:latest
+    container_name: firefly
+    restart: always
+    depends_on:
+      - firefly-db
+    volumes:
+      # Uploaded attachments and internal storage (NOT the database)
+      - ./data/upload:/var/www/html/storage/upload
+    environment:
+      - APP_ENV=production
+      - APP_DEBUG=false
+      # APP_KEY must be EXACTLY 32 characters — set in .env before first start
+      - APP_KEY=${FIREFLY_APP_KEY}
+      - SITE_OWNER=${FIREFLY_SITE_OWNER}
+      - TZ=Europe/Berlin
+      # Database connection (points at the firefly-db container below)
+      - DB_CONNECTION=mysql
+      - DB_HOST=firefly-db
+      - DB_PORT=3306
+      - DB_DATABASE=${FIREFLY_DB_DATABASE}
+      - DB_USERNAME=${FIREFLY_DB_USERNAME}
+      - DB_PASSWORD=${FIREFLY_DB_PASSWORD}
+      # Public URL and reverse-proxy trust (Nginx terminates TLS in front)
+      - APP_URL=https://finance.andreweigel.me
+      - TRUSTED_PROXIES=**
+      # Token the cron sidecar uses to trigger recurring jobs — 32 chars
+      - STATIC_CRON_TOKEN=${STATIC_CRON_TOKEN}
+    ports:
+      # Only expose on localhost; Nginx handles external traffic
+      - "127.0.0.1:8082:8080"
+    networks:
+      - finance-net
+
+  # --- MariaDB database for Firefly III ---
+  firefly-db:
+    image: mariadb:lts
+    container_name: firefly-db
+    restart: always
+    environment:
+      - MYSQL_RANDOM_ROOT_PASSWORD=yes
+      - MYSQL_USER=${FIREFLY_DB_USERNAME}
+      - MYSQL_PASSWORD=${FIREFLY_DB_PASSWORD}
+      - MYSQL_DATABASE=${FIREFLY_DB_DATABASE}
+    volumes:
+      # Persistent database storage
+      - ./db:/var/lib/mysql
+    networks:
+      - finance-net
+
+  # --- Cron sidecar: triggers Firefly's recurring jobs (bills, rules, etc.) ---
+  # Fires once an hour by hitting the internal cron endpoint with STATIC_CRON_TOKEN.
+  firefly-cron:
+    image: alpine
+    container_name: firefly-cron
+    restart: always
+    command: >
+      sh -c "echo \"0 * * * * wget -qO- http://firefly:8080/api/v1/cron/${STATIC_CRON_TOKEN}\"
+      | crontab - && crond -f -L /dev/stdout"
+    depends_on:
+      - firefly
+    networks:
+      - finance-net
+
+  # --- Data Importer: pulls N26 transactions via GoCardless (PSD2) ---
+  firefly-importer:
+    image: fireflyiii/data-importer:latest
+    container_name: firefly-importer
+    restart: always
+    depends_on:
+      - firefly
+    volumes:
+      # Saved import configs (config.json) used by the automated CLI import
+      - ./data/import:/import
+    environment:
+      # Talk to Firefly over the internal network (not via the public URL)
+      - FIREFLY_III_URL=http://firefly:8080
+      # The public URL, so links generated in the importer UI are correct
+      - VANITY_URL=https://finance.andreweigel.me
+      # Personal Access Token — generated in Firefly AFTER first login.
+      # Leave blank on first deploy, fill it in, then `docker compose up -d`.
+      - FIREFLY_III_ACCESS_TOKEN=${FIREFLY_PAT}
+      # GoCardless / Nordigen Bank Account Data credentials (N26 = Germany)
+      - NORDIGEN_ID=${NORDIGEN_ID}
+      - NORDIGEN_KEY=${NORDIGEN_KEY}
+      - TZ=Europe/Berlin
+      # Allow automated CLI imports from the mounted config directory
+      - IMPORT_DIR_ALLOWLIST=/import
+      - AUTO_IMPORT_SECRET=${AUTO_IMPORT_SECRET}
+      - CAN_POST_FILES=true
+      - CAN_POST_AUTOIMPORT=true
+    ports:
+      # Only expose on localhost; Nginx handles external traffic
+      - "127.0.0.1:8084:8080"
+    networks:
+      - finance-net
+
+networks:
+  finance-net:
+    external: true

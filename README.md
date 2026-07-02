@@ -21,7 +21,16 @@ Nginx (reverse proxy + SSL)
    ├── music.andreweigel.me     ──▶  Navidrome      (localhost:4533)
    ├── audiobooks.andreweigel.me──▶  Audiobookshelf (localhost:13378)
    ├── books.andreweigel.me     ──▶  Calibre-Web  (localhost:8083)
-   └── status.andreweigel.me    ──▶  Uptime Kuma  (localhost:3001)
+   ├── status.andreweigel.me    ──▶  Uptime Kuma  (localhost:3001)
+   ├── finance.andreweigel.me   ──▶  Firefly III  (localhost:8082)
+   │                                     │
+   │                                     ├── MariaDB          (container)
+   │                                     ├── Cron sidecar     (container)
+   │                                     └── Data Importer ──▶ N26 via GoCardless
+   └── import.andreweigel.me    ──▶  Firefly Data Importer (localhost:8084)
+
+Local-only add-ons (SSH tunnel, no public URL):
+   • Ollama + Node-RED  ──▶  AI auto-categorization (localhost:11434 / 1880)
 ```
 
 ---
@@ -38,6 +47,8 @@ Nginx (reverse proxy + SSL)
 | Audiobookshelf | audiobooks.andreweigel.me | Audiobook & podcast server (chapters, resume, mobile apps) |
 | Calibre-Web | books.andreweigel.me | Ebook library with OPDS (Kobo-compatible) |
 | Uptime Kuma | status.andreweigel.me | Uptime monitoring |
+| Firefly III | finance.andreweigel.me | Personal finance / N26 cash-flow analysis ([docs](docs/firefly.md)) |
+| Firefly Importer | import.andreweigel.me | Automated N26 import via GoCardless |
 
 ---
 
@@ -136,7 +147,9 @@ personal-cloud/
 │   ├── navidrome/
 │   ├── audiobookshelf/
 │   ├── calibre-web/
-│   └── uptime-kuma/
+│   ├── uptime-kuma/
+│   ├── firefly/            # Firefly III + DB + cron + data importer
+│   └── firefly-ai/         # Optional: Ollama + Node-RED auto-categorization
 │
 ├── nginx/                  # Nginx reverse proxy configs (one file per service)
 │
