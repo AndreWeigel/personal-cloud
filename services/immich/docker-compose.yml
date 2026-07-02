@@ -10,6 +10,8 @@ services:
     image: ghcr.io/immich-app/immich-server:${IMMICH_VERSION:-release}
     volumes:
       - ${UPLOAD_LOCATION}:/data
+      # Existing Nextcloud photo library, exposed read-only as an external library
+      - /mnt/storagebox/nextcloud/Photos:/mnt/existing-photos:ro
       - /etc/localtime:/etc/localtime:ro
     env_file:
       - .env

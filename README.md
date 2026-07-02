@@ -8,6 +8,7 @@ Browser
    ▼
 Nginx (reverse proxy + SSL)
    │
+   ├── andreweigel.me / www     ──▶  Static landing page (/var/www/andreweigel.me)
    ├── vault.andreweigel.me     ──▶  Vaultwarden  (localhost:8080)
    ├── cloud.andreweigel.me     ──▶  Nextcloud    (localhost:8081)
    │                                     │

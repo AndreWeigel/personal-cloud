@@ -14,11 +14,9 @@ services:
       - /mnt/storagebox/jellyfin/tvshows:/media/tvshows:ro
     environment:
       # Jellyfin reads these for hardware info — not secret
-      - JELLYFIN_PublishedServerUrl=https://media.yourdomain.com
+      - JELLYFIN_PublishedServerUrl=https://media.andreweigel.me
     ports:
       # Localhost only — Nginx handles external traffic
       - "127.0.0.1:8096:8096"
-    # Needed for sshfs mounts to be accessible inside the container
-    devices: []
     security_opt:
       - no-new-privileges:true
