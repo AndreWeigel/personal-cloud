@@ -2,6 +2,9 @@ services:
   navidrome:
     image: deluan/navidrome:latest
     container_name: navidrome
+    labels:
+      - 'wud.watch.digest=true'
+      - 'wud.tag.include=^latest$$'
     restart: always
     user: root
     volumes:

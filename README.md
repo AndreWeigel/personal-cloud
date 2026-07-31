@@ -47,6 +47,7 @@ Local-only add-ons (SSH tunnel, no public URL):
 | Audiobookshelf | audiobooks.andreweigel.me | Audiobook & podcast server (chapters, resume, mobile apps) |
 | Calibre-Web | books.andreweigel.me | Ebook library with OPDS (Kobo-compatible) |
 | Uptime Kuma | status.andreweigel.me | Uptime monitoring |
+| What's Up Docker | updates.andreweigel.me | Container image update monitoring |
 | Firefly III | finance.andreweigel.me | Personal finance / N26 cash-flow analysis ([docs](docs/firefly.md)) |
 | Firefly Importer | import.andreweigel.me | Automated N26 import via GoCardless |
 
@@ -148,6 +149,7 @@ personal-cloud/
 │   ├── audiobookshelf/
 │   ├── calibre-web/
 │   ├── uptime-kuma/
+│   ├── wud/                # What's Up Docker — image update monitoring
 │   ├── firefly/            # Firefly III + DB + cron + data importer
 │   └── firefly-ai/         # Optional: Ollama + Node-RED auto-categorization
 │

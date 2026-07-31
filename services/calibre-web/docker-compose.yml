@@ -2,6 +2,8 @@ services:
   calibre-web:
     image: lscr.io/linuxserver/calibre-web:latest
     container_name: calibre-web
+    labels:
+      - 'wud.watch=false'
     restart: always
     user: root
     volumes:

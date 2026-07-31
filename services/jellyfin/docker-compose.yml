@@ -2,6 +2,9 @@ services:
   jellyfin:
     image: jellyfin/jellyfin:latest
     container_name: jellyfin
+    labels:
+      - 'wud.watch.digest=true'
+      - 'wud.tag.include=^latest$$'
     restart: always
     # Run as root to avoid permission issues with Storage Box sshfs mounts
     user: root

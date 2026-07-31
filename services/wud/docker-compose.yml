@@ -1,0 +1,27 @@
+# What's Up Docker — container update monitoring
+# URL: updates.yourdomain.com
+#
+# Watches every running container and compares the running image against the
+# registry, so ":latest" tags that have silently gone stale show up before
+# they break something. Read-only: it reports, it never pulls or restarts.
+#
+# Auth comes from .env (WUD_AUTH_BASIC_*). The hash there must have its $
+# signs doubled — Compose interpolates env_file values, so a raw apr1 hash
+# arrives truncated and every login 401s. See .env.example.
+
+services:
+  wud:
+    image: getwud/wud:8
+    container_name: wud
+    labels:
+      - 'wud.watch.digest=true'
+      - 'wud.tag.include=^8$$'
+    restart: always
+    volumes:
+      # Read-only socket — WUD only needs to list containers and read labels.
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./data:/store
+    env_file:
+      - .env
+    ports:
+      - "127.0.0.1:8085:3000"
