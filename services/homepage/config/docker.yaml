@@ -1,2 +1,4 @@
+# Via the read-only socket proxy (see docker-compose.yml), not the raw socket.
 local:
-  socket: /var/run/docker.sock
+  host: dockerproxy
+  port: 2375

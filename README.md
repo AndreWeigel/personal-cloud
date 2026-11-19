@@ -48,7 +48,7 @@ Local-only add-ons (SSH tunnel, no public URL):
 | Calibre-Web | books.andreweigel.me | Ebook library with OPDS (Kobo-compatible) |
 | Uptime Kuma | status.andreweigel.me | Uptime monitoring |
 | What's Up Docker | _not public_ — `ssh -L 8085:127.0.0.1:8085` | Container image update monitoring. Deliberately tunnel-only: it holds a writable Docker socket, so a public listener would be root-equivalent on the host. |
-| Homepage | _not public_ — `ssh -L 3003:127.0.0.1:3003 -L 8085:127.0.0.1:8085` | One-page overview: every service with container status/CPU/RAM, host resources, Uptime Kuma + WUD widgets. Tunnel-only (read-only Docker socket). |
+| Homepage | home.andreweigel.me (password) — or `ssh -L 3003:127.0.0.1:3003` | One-page overview: every service with container status/CPU/RAM, host resources, Uptime Kuma + WUD widgets. nginx basic auth in front (Homepage has no login and reads the Docker socket). |
 | Firefly III | finance.andreweigel.me | Personal finance / N26 cash-flow analysis ([docs](docs/firefly.md)) |
 | Firefly Importer | import.andreweigel.me | Automated N26 import via GoCardless |
 
