@@ -18,6 +18,9 @@ services:
     restart: always
     volumes:
       - ./config:/app/config
+      # Storage Box usage for the widget. Every /mnt/storagebox/* folder is the
+      # same 1 TB box, so one (least sensitive) folder is enough to report it.
+      - /mnt/storagebox/calibre:/mnt/storagebox:ro
     environment:
       # v1 rejects requests whose Host header isn't listed here.
       - HOMEPAGE_ALLOWED_HOSTS=home.andreweigel.me,localhost:3003,127.0.0.1:3003

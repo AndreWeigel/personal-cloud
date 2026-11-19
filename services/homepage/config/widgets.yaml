@@ -1,8 +1,13 @@
 - resources:
+    label: Server
     cpu: true
     memory: true
     disk: /
     uptime: true
+- resources:
+    label: Storage Box
+    expanded: true   # show total as well as free
+    disk: /mnt/storagebox
 - datetime:
     format:
       dateStyle: medium

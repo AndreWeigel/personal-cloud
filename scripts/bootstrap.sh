@@ -107,13 +107,18 @@ enabled = true
 port    = ssh
 logpath = /var/log/auth.log
 
+# backend = auto: Ubuntu's defaults-debian.conf sets backend = systemd for every
+# jail, but nginx logs to files, not the journal, so without this the nginx
+# jails silently never match anything.
 [nginx-http-auth]
 enabled  = true
+backend  = auto
 port     = http,https
 logpath  = /var/log/nginx/error.log
 
 [nginx-botsearch]
 enabled  = true
+backend  = auto
 port     = http,https
 logpath  = /var/log/nginx/access.log
 maxretry = 2
