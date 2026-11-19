@@ -1,0 +1,70 @@
+# `container` = container_name from services/<name>/docker-compose.yml.
+# Keep in sync when a service is added or removed.
+- Media:
+    - Immich:
+        href: https://photos.andreweigel.me
+        icon: immich.png
+        server: local
+        container: immich_server
+    - Jellyfin:
+        href: https://media.andreweigel.me
+        icon: jellyfin.png
+        server: local
+        container: jellyfin
+    - Navidrome:
+        href: https://music.andreweigel.me
+        icon: navidrome.png
+        server: local
+        container: navidrome
+    - Audiobookshelf:
+        href: https://audiobooks.andreweigel.me
+        icon: audiobookshelf.png
+        server: local
+        container: audiobookshelf
+    - Calibre-Web:
+        href: https://books.andreweigel.me
+        icon: calibre-web.png
+        server: local
+        container: calibre-web
+
+- Files & Security:
+    - Nextcloud:
+        href: https://cloud.andreweigel.me
+        icon: nextcloud.png
+        server: local
+        container: nextcloud
+    - Vaultwarden:
+        href: https://vault.andreweigel.me
+        icon: vaultwarden.png
+        server: local
+        container: vaultwarden
+
+# Built from their own repos; container names live there, so link-only.
+- Apps:
+    - MapTap:
+        href: https://maptap.andreweigel.me
+        icon: mdi-map-marker
+    - Quiz:
+        href: https://quiz.andreweigel.me
+        icon: mdi-help-circle
+
+- Admin:
+    - Uptime Kuma:
+        href: https://status.andreweigel.me
+        icon: uptime-kuma.png
+        server: local
+        container: uptime-kuma
+        widget:
+          type: uptimekuma
+          url: https://status.andreweigel.me
+          slug: services   # create a status page with this slug in Kuma
+    - What's Up Docker:
+        href: http://localhost:8085   # via the SSH tunnel
+        icon: whats-up-docker.png
+        server: local
+        container: wud
+        widget:
+          type: whatsupdocker
+          url: http://wud:3000
+          username: "{{HOMEPAGE_VAR_WUD_USER}}"
+          password: "{{HOMEPAGE_VAR_WUD_PASSWORD}}"
