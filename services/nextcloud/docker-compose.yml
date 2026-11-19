@@ -28,11 +28,14 @@ services:
 
   # --- Nextcloud application ---
   nextcloud:
-    image: nextcloud:latest
+    # Pinned to a major: Nextcloud cannot skip majors, and :latest jumped 33 -> 35.
+    # The floating major tag still gets patch releases; WUD flags the next major
+    # so it can be done one step at a time (bump this number, then occ upgrade).
+    image: nextcloud:35
     container_name: nextcloud
     labels:
       - 'wud.watch.digest=true'
-      - 'wud.tag.include=^latest$$'
+      - 'wud.tag.include=^\d+$$'
     restart: always
     depends_on:
       - nextcloud-db

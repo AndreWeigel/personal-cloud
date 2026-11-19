@@ -34,6 +34,9 @@ services:
       - 'wud.watch.digest=true'
       - 'wud.tag.include=^v\d+$$'
     image: ghcr.io/immich-app/immich-machine-learning:${IMMICH_VERSION:-release}
+    environment:
+      # v3.3.0+: optimized export of the same models — identical outputs, no re-run needed
+      MACHINE_LEARNING_MODEL_REVISION: v2
     volumes:
       - model-cache:/cache
     env_file:
@@ -48,7 +51,7 @@ services:
       - 'wud.watch=false'
     image: docker.io/valkey/valkey:9
     healthcheck:
-      test: redis-cli ping || exit 1
+      test: redis-cli ping | grep -q PONG || exit 1
     restart: always
 
   database:
