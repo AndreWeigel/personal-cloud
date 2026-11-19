@@ -5,6 +5,9 @@ services:
   uptime-kuma:
     image: louislam/uptime-kuma:1
     container_name: uptime-kuma
+    labels:
+      - 'wud.watch.digest=true'
+      - 'wud.tag.include=^1$$'
     restart: always
     volumes:
       - ./data:/app/data

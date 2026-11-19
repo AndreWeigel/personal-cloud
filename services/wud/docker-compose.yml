@@ -1,0 +1,41 @@
+# What's Up Docker — container update monitoring
+# No public URL by design. Reach it with:
+#   ssh -L 8085:127.0.0.1:8085 <server>   then http://localhost:8085
+#
+# There is no nginx config for this service on purpose. It mounts a writable
+# Docker socket (see below), so anything that can reach it can create a
+# container with a host bind-mount — i.e. root on the box. Do not proxy it
+# publicly without first removing the socket write access and the trigger.
+#
+# Watches every running container and compares the running image against the
+# registry, so ":latest" tags that have silently gone stale show up before
+# they break something. Read-only: it reports, it never pulls or restarts.
+#
+# Auth comes from .env (WUD_AUTH_BASIC_*). The hash there must have its $
+# signs doubled — Compose interpolates env_file values, so a raw apr1 hash
+# arrives truncated and every login 401s. See .env.example.
+
+services:
+  wud:
+    image: getwud/wud:8
+    container_name: wud
+    labels:
+      - 'wud.watch.digest=true'
+      - 'wud.tag.include=^8$$'
+    restart: always
+    volumes:
+      # Read-write socket: the docker trigger below needs to stop/create
+      # containers. This is root-equivalent access to the host — the reason
+      # this service is not exposed publicly.
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./data:/store
+    env_file:
+      - .env
+    environment:
+      # Update button in the UI. AUTO=false means WUD never updates anything
+      # on its own — it only acts when a human clicks (or calls the API).
+      - WUD_TRIGGER_DOCKER_LOCAL_AUTO=false
+      # Keep the old image after an update so a rollback is just a retag.
+      - WUD_TRIGGER_DOCKER_LOCAL_PRUNE=false
+    ports:
+      - "127.0.0.1:8085:3000"

@@ -16,6 +16,9 @@ services:
   firefly:
     image: fireflyiii/core:latest
     container_name: firefly
+    labels:
+      - 'wud.watch.digest=true'
+      - 'wud.tag.include=^latest$$'
     restart: always
     depends_on:
       - firefly-db
@@ -51,6 +54,9 @@ services:
   firefly-db:
     image: mariadb:lts
     container_name: firefly-db
+    labels:
+      - 'wud.watch.digest=true'
+      - 'wud.tag.include=^lts$$'
     restart: always
     environment:
       - MYSQL_RANDOM_ROOT_PASSWORD=yes
@@ -68,6 +74,9 @@ services:
   firefly-cron:
     image: alpine
     container_name: firefly-cron
+    labels:
+      - 'wud.watch.digest=true'
+      - 'wud.tag.include=^latest$$'
     restart: always
     command: >
       sh -c "echo \"0 * * * * wget -qO- http://firefly:8080/api/v1/cron/${STATIC_CRON_TOKEN}\"
@@ -81,6 +90,9 @@ services:
   firefly-importer:
     image: fireflyiii/data-importer:latest
     container_name: firefly-importer
+    labels:
+      - 'wud.watch.digest=true'
+      - 'wud.tag.include=^latest$$'
     restart: always
     depends_on:
       - firefly

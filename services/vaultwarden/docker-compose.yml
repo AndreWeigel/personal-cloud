@@ -2,6 +2,9 @@ services:
   vaultwarden:
     image: vaultwarden/server:latest
     container_name: vaultwarden
+    labels:
+      - 'wud.watch.digest=true'
+      - 'wud.tag.include=^latest$$'
     restart: always
     volumes:
       # Persistent data (vault items, attachments, etc.)

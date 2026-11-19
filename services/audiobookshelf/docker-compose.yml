@@ -2,6 +2,9 @@ services:
   audiobookshelf:
     image: ghcr.io/advplyr/audiobookshelf:latest
     container_name: audiobookshelf
+    labels:
+      - 'wud.watch.digest=true'
+      - 'wud.tag.include=^latest$$'
     restart: always
     volumes:
       # App config (server settings, users, sessions)

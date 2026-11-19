@@ -1,0 +1,37 @@
+# Homepage — one-page overview of every service on the box
+# No public URL by design (same reasoning as WUD). Reach it with:
+#   ssh -L 3003:127.0.0.1:3003 -L 8085:127.0.0.1:8085 <server>
+#   then http://localhost:3003  (the WUD tile links to localhost:8085)
+#
+# The Docker socket is mounted read-only for container status/CPU/RAM per tile.
+# Read-only still lets the holder `docker inspect` every container, env vars
+# and secrets included, so this stays tunnel-only too.
+
+services:
+  homepage:
+    image: ghcr.io/gethomepage/homepage:latest
+    container_name: homepage
+    labels:
+      - 'wud.watch.digest=true'
+      - 'wud.tag.include=^latest$$'
+    restart: always
+    volumes:
+      - ./config:/app/config
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      # v1 rejects requests whose Host header isn't listed here.
+      - HOMEPAGE_ALLOWED_HOSTS=localhost:3003,127.0.0.1:3003
+      # Picked up from .env by Compose; used as {{HOMEPAGE_VAR_*}} in services.yaml.
+      # Only these two are passed in, not the whole .env.
+      - HOMEPAGE_VAR_WUD_USER=${WUD_AUTH_BASIC_ANDRE_USER}
+      - HOMEPAGE_VAR_WUD_PASSWORD=${HOMEPAGE_WUD_PASSWORD}
+    networks:
+      - default
+      - wud   # reach WUD's API at http://wud:3000 (it only listens on host 127.0.0.1)
+    ports:
+      - "127.0.0.1:3003:3000"
+
+networks:
+  wud:
+    external: true
+    name: wud_default   # Compose project "wud" (deployed to ~/wud) — deploy WUD first

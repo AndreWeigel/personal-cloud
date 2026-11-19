@@ -1,0 +1,19 @@
+title: personal-cloud
+theme: dark
+color: slate
+headerStyle: clean
+statusStyle: dot
+showStats: true   # CPU/RAM per container tile
+layout:
+  Media:
+    style: row
+    columns: 3
+  Files & Security:
+    style: row
+    columns: 2
+  Apps:
+    style: row
+    columns: 2
+  Admin:
+    style: row
+    columns: 2

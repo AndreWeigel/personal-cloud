@@ -7,6 +7,9 @@ name: immich
 services:
   immich-server:
     container_name: immich_server
+    labels:
+      - 'wud.watch.digest=true'
+      - 'wud.tag.include=^v\d+$$'
     image: ghcr.io/immich-app/immich-server:${IMMICH_VERSION:-release}
     volumes:
       - ${UPLOAD_LOCATION}:/data
@@ -27,6 +30,9 @@ services:
 
   immich-machine-learning:
     container_name: immich_machine_learning
+    labels:
+      - 'wud.watch.digest=true'
+      - 'wud.tag.include=^v\d+$$'
     image: ghcr.io/immich-app/immich-machine-learning:${IMMICH_VERSION:-release}
     volumes:
       - model-cache:/cache
@@ -38,6 +44,8 @@ services:
 
   redis:
     container_name: immich_redis
+    labels:
+      - 'wud.watch=false'
     image: docker.io/valkey/valkey:9
     healthcheck:
       test: redis-cli ping || exit 1
@@ -45,6 +53,8 @@ services:
 
   database:
     container_name: immich_postgres
+    labels:
+      - 'wud.watch=false'
     image: ghcr.io/immich-app/postgres:14-vectorchord0.4.3-pgvectors0.2.0
     environment:
       POSTGRES_PASSWORD: ${DB_PASSWORD}

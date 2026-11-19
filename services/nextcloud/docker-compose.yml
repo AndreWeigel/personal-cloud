@@ -3,6 +3,9 @@ services:
   nextcloud-db:
     image: mariadb:10.11
     container_name: nextcloud-db
+    labels:
+      - 'wud.watch.digest=true'
+      - 'wud.tag.include=^10\.11$$'
     restart: always
     command: --transaction-isolation=READ-COMMITTED --log-bin=binlog --binlog-format=ROW
     volumes:
@@ -18,12 +21,18 @@ services:
   nextcloud-redis:
     image: redis:alpine
     container_name: nextcloud-redis
+    labels:
+      - 'wud.watch.digest=true'
+      - 'wud.tag.include=^alpine$$'
     restart: always
 
   # --- Nextcloud application ---
   nextcloud:
     image: nextcloud:latest
     container_name: nextcloud
+    labels:
+      - 'wud.watch.digest=true'
+      - 'wud.tag.include=^latest$$'
     restart: always
     depends_on:
       - nextcloud-db

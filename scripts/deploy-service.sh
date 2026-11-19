@@ -35,7 +35,6 @@ SERVICE_DIR="$HOME/$SERVICE"
 # Check that source files exist
 # ---------------------------------------------------------------------------
 [[ -f "$COMPOSE_SRC" ]] || error "No docker-compose.yml found at $COMPOSE_SRC"
-[[ -f "$NGINX_SRC"   ]] || error "No Nginx config found at $NGINX_SRC"
 
 # ---------------------------------------------------------------------------
 # 1. Copy Docker Compose file
@@ -43,6 +42,13 @@ SERVICE_DIR="$HOME/$SERVICE"
 info "Copying docker-compose.yml to $SERVICE_DIR/..."
 mkdir -p "$SERVICE_DIR"
 cp "$COMPOSE_SRC" "$SERVICE_DIR/docker-compose.yml"
+
+# Repo-managed config (e.g. homepage/config) — overwrites tracked files only.
+if [[ -d "$REPO_ROOT/services/$SERVICE/config" ]]; then
+    mkdir -p "$SERVICE_DIR/config"
+    cp -r "$REPO_ROOT/services/$SERVICE/config/." "$SERVICE_DIR/config/"
+    info "config/ copied to $SERVICE_DIR/config/"
+fi
 
 # ---------------------------------------------------------------------------
 # 2. Copy .env if it exists in the repo root
@@ -55,32 +61,33 @@ else
 fi
 
 # ---------------------------------------------------------------------------
-# 3. Install Nginx config
+# 3. Install Nginx config + reload (skipped for tunnel-only services: wud, homepage)
 # ---------------------------------------------------------------------------
-NGINX_DEST="/etc/nginx/sites-available/$SERVICE.conf"
-NGINX_LINK="/etc/nginx/sites-enabled/$SERVICE.conf"
+if [[ -f "$NGINX_SRC" ]]; then
+    NGINX_DEST="/etc/nginx/sites-available/$SERVICE.conf"
+    NGINX_LINK="/etc/nginx/sites-enabled/$SERVICE.conf"
 
-info "Installing Nginx config to $NGINX_DEST..."
-cp "$NGINX_SRC" "$NGINX_DEST"
+    info "Installing Nginx config to $NGINX_DEST..."
+    cp "$NGINX_SRC" "$NGINX_DEST"
 
-if [[ ! -L "$NGINX_LINK" ]]; then
-    ln -s "$NGINX_DEST" "$NGINX_LINK"
-    info "Symlink created: $NGINX_LINK"
+    if [[ ! -L "$NGINX_LINK" ]]; then
+        ln -s "$NGINX_DEST" "$NGINX_LINK"
+        info "Symlink created: $NGINX_LINK"
+    else
+        info "Nginx symlink already exists, skipping."
+    fi
+
+    info "Testing Nginx configuration..."
+    nginx -t || error "Nginx config test failed — fix the config before continuing."
+
+    info "Reloading Nginx..."
+    systemctl reload nginx
 else
-    info "Nginx symlink already exists, skipping."
+    info "No nginx/$SERVICE.conf — tunnel-only service, skipping Nginx."
 fi
 
 # ---------------------------------------------------------------------------
-# 4. Test and reload Nginx
-# ---------------------------------------------------------------------------
-info "Testing Nginx configuration..."
-nginx -t || error "Nginx config test failed — fix the config before continuing."
-
-info "Reloading Nginx..."
-systemctl reload nginx
-
-# ---------------------------------------------------------------------------
-# 5. Start or restart the service
+# 4. Start or restart the service
 # ---------------------------------------------------------------------------
 info "Starting $SERVICE with Docker Compose..."
 cd "$SERVICE_DIR"
